@@ -201,6 +201,9 @@ class Job(object):
     name = property(_Topaz.Job_name_get, _Topaz.Job_name_set)
     status = property(_Topaz.Job_status_get, _Topaz.Job_status_set)
 
+    def __str__(self):
+        return _Topaz.Job___str__(self)
+
     def __init__(self):
         _Topaz.Job_swiginit(self, _Topaz.new_Job())
     __swig_destroy__ = _Topaz.delete_Job

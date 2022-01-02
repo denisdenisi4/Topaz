@@ -53,7 +53,15 @@ struct DeviceInformation {
 	}
     char *__str__() {
         static char temp[256];
-        sprintf(temp,"%d-%02d-%02d %02d:%02d:%02d", $self->year, $self->month, $self->day, $self->hour, $self->minute, $self->second);
+        sprintf(temp,"{ %d-%02d-%02d %02d:%02d:%02d }", $self->year, $self->month, $self->day, $self->hour, $self->minute, $self->second);
+        return &temp[0];
+    }
+};
+
+%extend Xrite::Device_Cpp::Topaz::Job {
+    char *__str__() {
+        static char temp[256];
+        sprintf(temp,"{ identifier: '%s', name: '%s', status: %d }", (const char *)$self->identifier, (const char *)$self->name, $self->status);
         return &temp[0];
     }
 };

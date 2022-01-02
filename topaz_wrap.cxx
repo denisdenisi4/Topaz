@@ -3095,7 +3095,7 @@ SWIGINTERN void delete_Xrite_Device_Cpp_Topaz_Time(Xrite::Device_Cpp::Topaz::Tim
 	}
 SWIGINTERN char *Xrite_Device_Cpp_Topaz_Time___str__(Xrite::Device_Cpp::Topaz::Time *self){
         static char temp[256];
-        sprintf(temp,"%d-%02d-%02d %02d:%02d:%02d", self->year, self->month, self->day, self->hour, self->minute, self->second);
+        sprintf(temp,"{ %d-%02d-%02d %02d:%02d:%02d }", self->year, self->month, self->day, self->hour, self->minute, self->second);
         return &temp[0];
     }
 
@@ -3150,6 +3150,11 @@ SWIGINTERNINLINE PyObject*
   return PyInt_FromLong((long) value);
 }
 
+SWIGINTERN char *Xrite_Device_Cpp_Topaz_Job___str__(Xrite::Device_Cpp::Topaz::Job *self){
+        static char temp[256];
+        sprintf(temp,"{ identifier: '%s', name: '%s', status: %d }", (const char *)self->identifier, (const char *)self->name, self->status);
+        return &temp[0];
+    }
 
 /* Getting isfinite working pre C99 across multiple platforms is non-trivial. Users can provide SWIG_isfinite on older platforms. */
 #ifndef SWIG_isfinite
@@ -5030,6 +5035,29 @@ SWIGINTERN PyObject *_wrap_Job_status_get(PyObject *SWIGUNUSEDPARM(self), PyObje
   arg1 = reinterpret_cast< Xrite::Device_Cpp::Topaz::Job * >(argp1);
   result = (uint32_t) ((arg1)->status);
   resultobj = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Job___str__(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Xrite::Device_Cpp::Topaz::Job *arg1 = (Xrite::Device_Cpp::Topaz::Job *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  char *result = 0 ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Xrite__Device_Cpp__Topaz__Job, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Job___str__" "', argument " "1"" of type '" "Xrite::Device_Cpp::Topaz::Job *""'"); 
+  }
+  arg1 = reinterpret_cast< Xrite::Device_Cpp::Topaz::Job * >(argp1);
+  result = (char *)Xrite_Device_Cpp_Topaz_Job___str__(arg1);
+  resultobj = SWIG_FromCharPtr((const char *)result);
   return resultobj;
 fail:
   return NULL;
@@ -9487,6 +9515,7 @@ static PyMethodDef SwigMethods[] = {
 	 { "Job_name_get", _wrap_Job_name_get, METH_O, NULL},
 	 { "Job_status_set", _wrap_Job_status_set, METH_VARARGS, NULL},
 	 { "Job_status_get", _wrap_Job_status_get, METH_O, NULL},
+	 { "Job___str__", _wrap_Job___str__, METH_O, NULL},
 	 { "new_Job", _wrap_new_Job, METH_NOARGS, NULL},
 	 { "delete_Job", _wrap_delete_Job, METH_O, NULL},
 	 { "Job_swigregister", Job_swigregister, METH_O, NULL},
