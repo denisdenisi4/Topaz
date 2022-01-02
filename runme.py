@@ -25,7 +25,6 @@ try:
 
     # maxNumberOfDescriptions = 5;
     # descriptions = interface.getNetworkDescriptions(maxNumberOfDescriptions)
-    # # Not tested because of no device
     # for desc in descriptions:
     #     print(desc)
 
@@ -42,29 +41,27 @@ try:
 
     # maxNumberOfJobs = 5
     # jobs = interface.getJobList(maxNumberOfJobs)
-    # Not tested because of no device
     # for j in jobs:
     #     print(j)
 
     # numberOfMeasurements = 5
-    # interface.addJob("job identification", "job description", numberOfMeasurements)
+    # print(interface.addJob("JobId4", "Job4", numberOfMeasurements))    
 
-    # interface.deleteJob("job identification");
+    # interface.deleteJob("JobId3");
 
     # maxNumberOfSamples = 10
-    # job, time, result = interface.getJobResult("job identification", 0)
-    # print(j)
+    # job, time, result = interface.getJobResult("JobId1", 0)
     # print(time)
+    # print(job)
     # print(result)
-    # job, time, result, samples = interface.getJobResult("job identification", maxNumberOfSamples)
-    # # Not tested because of no device
+    # job, time, result, samples = interface.getJobResult("JobId1", maxNumberOfSamples)
     # for s in samples:
     #     print(s)
 
     # elepasedTimeInMs = interface.openShutter()
-    # print("Timestamp open: " + elepasedTimeInMs)
+    # print("Timestamp open: " + str(elepasedTimeInMs))
     # elepasedTimeInMs = interface.closeShutter()
-    # print("Timestamp close: " + elepasedTimeInMs)
+    # print("Timestamp close: " + str(elepasedTimeInMs))
 
     # device_info = interface.getDeviceInformation()
     # print(device_info)

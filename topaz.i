@@ -15,11 +15,11 @@
 %inline %{
 namespace Xrite { namespace Device_Cpp { namespace Topaz {
 struct DeviceInformation {
-    uint8_t serialNumber[Xrite::Device_Cpp::Topaz::MaxStringLength];
-    uint8_t whiteTile[Xrite::Device_Cpp::Topaz::MaxStringLength];
-    uint8_t calibrationDate[Xrite::Device_Cpp::Topaz::MaxStringLength]; 
-    uint8_t instrumentType[Xrite::Device_Cpp::Topaz::MaxStringLength];
-    uint8_t angles[Xrite::Device_Cpp::Topaz::MaxNumberOfAngles][Xrite::Device_Cpp::Topaz::MaxStringLength];
+    char serialNumber[Xrite::Device_Cpp::Topaz::MaxStringLength];
+    char whiteTile[Xrite::Device_Cpp::Topaz::MaxStringLength];
+    char calibrationDate[Xrite::Device_Cpp::Topaz::MaxStringLength]; 
+    char instrumentType[Xrite::Device_Cpp::Topaz::MaxStringLength];
+    char angles[Xrite::Device_Cpp::Topaz::MaxNumberOfAngles][Xrite::Device_Cpp::Topaz::MaxStringLength];
     uint8_t numberOfAngles;
 };
 }}}
@@ -29,8 +29,8 @@ struct DeviceInformation {
 %include "Topaz_Cpp/TopazInterface.h"
 
 %extend Xrite::Device_Cpp::Topaz::DeviceInformation {
-    const char *__str__() {
-        static std::ostringstream ss;
+    PyObject *__str__() {
+        std::ostringstream ss;
 		ss.str("");
         ss.clear();
 
@@ -47,7 +47,7 @@ struct DeviceInformation {
 		ss << "]";
 		ss << "}";
 
-		return ss.str().c_str();
+		return PyString_FromString(ss.str().c_str());
     }
 }
 
@@ -147,25 +147,23 @@ struct DeviceInformation {
 	}
     const char *__str__() {
         static char temp[256];
-        sprintf(temp,"{ %d-%02d-%02d %02d:%02d:%02d }", $self->year, $self->month, $self->day, $self->hour, $self->minute, $self->second);
+        sprintf(temp,"%d-%02d-%02d %02d:%02d:%02d", $self->year, $self->month, $self->day, $self->hour, $self->minute, $self->second);
         return &temp[0];
     }
 };
 
 %extend Xrite::Device_Cpp::Topaz::Job {
-    const char *__str__() {
-        static char temp[256];
-        sprintf(temp,"{ identifier: '%s', name: '%s', state: %u }", 
-		      (const char *)$self->identifier, (const char *)$self->name, $self->status);
-        return &temp[0];
+    PyObject *__str__() {
+        std::ostringstream ss;
+        ss << "{ identifier: '" << (const char *)$self->identifier << "', " <<
+		      "name: '" << (const char *)$self->name << "', state: " << $self->status << " }";
+        return PyString_FromString(ss.str().c_str());
     }
 };
 
 %extend Xrite::Device_Cpp::Topaz::Sample {
-    const char *__str__() {
-        static std::ostringstream ss;
-		ss.str("");
-        ss.clear();
+    PyObject *__str__() {
+        std::ostringstream ss;
 
 		ss << "{ time: '" << $self->timeStamp.year << "-" << $self->timeStamp.month << "-" << $self->timeStamp.day << " "
 		   << $self->timeStamp.hour << ":" << $self->timeStamp.minute << ":" << $self->timeStamp.second << "', ";
@@ -192,12 +190,12 @@ struct DeviceInformation {
 		}
 		ss << "]}";
 
-		return ss.str().c_str();
+		return PyString_FromString(ss.str().c_str());
     }
 };
 
 %extend Xrite::Device_Cpp::Topaz::NetworkDescription {
-    const char *__str__() {
+    PyObject *__str__() {
         static std::ostringstream ss;
 		ss.str("");
         ss.clear();
@@ -212,7 +210,7 @@ struct DeviceInformation {
 		ss << "rate: " << $self->rate << ", ";
 		ss << " }";
 
-		return ss.str().c_str();
+		return PyString_FromString(ss.str().c_str());
     }
 };
 
@@ -269,7 +267,7 @@ struct DeviceInformation {
 			sprintf(temp,"getSelftestReport() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
-		pyBuffer = PyBytes_FromStringAndSize((const char *)buffer, actualBufferSize);
+		pyBuffer = PyString_FromString((const char *)buffer);
 		delete[] buffer;
 		return pyBuffer;
 		fail:
@@ -287,23 +285,23 @@ struct DeviceInformation {
 			sprintf(temp,"getDeviceLog() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
-		pyBuffer = PyBytes_FromStringAndSize((const char *)buffer, actualBufferSize);
+		pyBuffer = PyString_FromString((const char *)buffer);
 		delete[] buffer;
 		return pyBuffer;
 		fail:
 	    return nullptr;
 	}
 
-    void startMeasureMode(const char* identification) {
+    PyObject *startMeasureMode(const char* identification) {
 		uint32_t libCode = $self->startMeasureMode((const uint8_t*) identification);
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 			static char temp[256];
 			sprintf(temp,"startMeasureMode() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
-		return;
+		return nullptr;
 		fail:
-	    return;
+	    return nullptr;
 	}
 
     PyObject *getFirmwareInformation() {
@@ -332,9 +330,9 @@ struct DeviceInformation {
 	    return nullptr;
     }
 
-     PyObject *getDeviceInformation() {
+    PyObject *getDeviceInformation() {
 	    Xrite::Device_Cpp::Topaz::DeviceInformation* info = new Xrite::Device_Cpp::Topaz::DeviceInformation;
-		uint32_t libCode = $self->getDeviceInformation(info->serialNumber, info->whiteTile, info->calibrationDate, info->instrumentType, (uint8_t *) info->angles, info->numberOfAngles);
+		uint32_t libCode = $self->getDeviceInformation((uint8_t *)info->serialNumber, (uint8_t *)info->whiteTile, (uint8_t *)info->calibrationDate, (uint8_t *)info->instrumentType, (uint8_t *) info->angles, info->numberOfAngles);
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 		    delete info;
 		    static char temp[256];
@@ -346,30 +344,30 @@ struct DeviceInformation {
 	    return nullptr;
     }
 
-    uint16_t openShutter() {
+    PyObject *openShutter() {
 	    uint16_t elepasedTimeInMs = 0;
         uint32_t libCode = $self->openShutter(1, elepasedTimeInMs);
-		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
+		if (libCode != 0 && libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 			static char temp[256];
 			sprintf(temp,"openShutter() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
-        return elepasedTimeInMs;
+        return PyLong_FromLong(elepasedTimeInMs);
 		fail:
-	    return elepasedTimeInMs;
+	    return nullptr;
 	}
 
-	uint16_t closeShutter() {
+	PyObject *closeShutter() {
 	    uint16_t elepasedTimeInMs = 0;
         uint32_t libCode = $self->openShutter(0, elepasedTimeInMs);
-		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
+		if (libCode != 0 && libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 			static char temp[256];
 			sprintf(temp,"closeShutter() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
-        return elepasedTimeInMs;
+        return PyLong_FromLong(elepasedTimeInMs);
 		fail:
-	    return elepasedTimeInMs;
+	    return nullptr;
 	}
 
     PyObject *getJobResult(const char* identification, uint8_t maxNumberOfSamples) {
@@ -409,28 +407,28 @@ struct DeviceInformation {
 	    return nullptr;
 	}
 
-    void deleteJob(const char* identification) {
+    PyObject *deleteJob(const char* identification) {
 		uint32_t libCode = $self->deleteJob((const uint8_t*) identification);
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 			static char temp[256];
 			sprintf(temp,"deleteJob() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
-		return;
+		return nullptr;
 		fail:
-	    return;
+	    return nullptr;
 	}
 
-    void addJob(const char* identification, const char* description, uint8_t numberOfMeasurements) {
+    PyObject *addJob(const char* identification, const char* description, uint8_t numberOfMeasurements) {
 		uint32_t libCode = $self->addJob((const uint8_t*) identification, (const uint8_t*) description, numberOfMeasurements);
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 			static char temp[256];
 			sprintf(temp,"addJob() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
-		return;
+		return nullptr;
 		fail:
-	    return;
+	    return nullptr;
 	}
 
     PyObject *getJobList(uint16_t maxNumberOfJobs) {
@@ -456,7 +454,7 @@ struct DeviceInformation {
 	    return nullptr;
 	}
 
-    uint16_t getTotalNumberOfJobs() {
+    PyObject *getTotalNumberOfJobs() {
 	    uint16_t totalNumberOfJobs = 0;
         uint32_t libCode = $self->getTotalNumberOfJobs(totalNumberOfJobs);
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
@@ -464,9 +462,9 @@ struct DeviceInformation {
 			sprintf(temp,"getTotalNumberOfJobs() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
-        return totalNumberOfJobs;
+        return PyLong_FromLong(totalNumberOfJobs);
 		fail:
-	    return totalNumberOfJobs;
+	    return nullptr;
     }
 
     PyObject *getHostname() {
@@ -482,16 +480,16 @@ struct DeviceInformation {
 	    return nullptr;
     }
 
-    void setHostname(const char* hostname) {
+    PyObject *setHostname(const char* hostname) {
 		uint32_t libCode = $self->setHostname((const uint8_t*) hostname);
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 			static char temp[256];
 			sprintf(temp,"setHostname() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
-		return;
+		return nullptr;
 		fail:
-	    return;
+	    return nullptr;
 	}
 
     PyObject *getWifiConfiguration() {
@@ -507,16 +505,16 @@ struct DeviceInformation {
 	    return nullptr;
     }
 
-    void setWifiConfiguration(const char* ssid, const char* password) {
+    PyObject *setWifiConfiguration(const char* ssid, const char* password) {
 		uint32_t libCode = $self->setWifiConfiguration((const uint8_t*) ssid, (const uint8_t*) password);
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 			static char temp[256];
 			sprintf(temp,"setWifiConfiguration() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
-		return;
+		return nullptr;
 		fail:
-	    return;
+	    return nullptr;
 	}
 
     PyObject *getNetworkDescriptions(uint8_t maxNumberOfDescriptions) {
@@ -542,28 +540,28 @@ struct DeviceInformation {
 	    return nullptr;
 	}
 
-    void powerWiFiOn() {
+    PyObject *powerWiFiOn() {
 		uint32_t libCode = $self->powerWiFiOn();
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 		    static char temp[256];
 			sprintf(temp,"powerWiFiOn() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
-	    return;
+	    return nullptr;
 		fail:
-	    return;
+	    return nullptr;
 	}
 
-    void powerWiFiOff() {
+    PyObject *powerWiFiOff() {
 		uint32_t libCode = $self->powerWiFiOff();
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 		    static char temp[256];
 			sprintf(temp,"powerWiFiOff() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
-	    return;
+	    return nullptr;
 		fail:
-	    return;
+	    return nullptr;
 	}
 
     PyObject *getTime() {
@@ -594,52 +592,52 @@ struct DeviceInformation {
 	    return nullptr;
     }
 
-	void wifiConnect(const char *address) {
+	PyObject *wifiConnect(const char *address) {
 	    uint32_t libCode = $self->connect((const uint8_t* )address);
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 			static char temp[256];
 			sprintf(temp,"wifiConnect() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
-        return;
+        return nullptr;
 		fail:
-	    return;
+	    return nullptr;
 	}
 
-	void usbConnect() {
+	PyObject *usbConnect() {
 	    uint32_t libCode = $self->connect(nullptr);
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 			static char temp[256];
 			sprintf(temp,"usbConnect() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
-        return;
+        return nullptr;
 		fail:
-	    return;
+	    return nullptr;
 	}
 
-	void powerWiFiOn() {
+	PyObject *powerWiFiOn() {
 	    uint32_t libCode = $self->powerWiFiOn();
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 		    static char temp[256];
 			sprintf(temp,"powerWiFiOn() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
-	    return;
+	    return nullptr;
 		fail:
-	    return;
+	    return nullptr;
 	}
 
-	void powerWiFiOff() {
+	PyObject *powerWiFiOff() {
 	    uint32_t libCode = $self->powerWiFiOff();
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 		    static char temp[256];
 			sprintf(temp,"powerWiFiOff() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
-	    return;
+	    return nullptr;
 		fail:
-	    return;
+	    return nullptr;
 	}
 
 	PyObject *unlock(const char* key) {
