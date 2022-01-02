@@ -11,14 +11,14 @@ try:
     # interface.wifiConnect("1.2.3.4")
     # interface.disconnect()
 
-    # interface.unlock("12345678")
+    # interface.unlock("AABBAABBAABBAABB")
 
     # time_to_set = Topaz.Time(2022,1,1,0,0,0)
-    # print("Time to set: " + str(time_to_set))
+    # print(time_to_set)
     # interface.setTime(time_to_set)
 
     # time_from_device = interface.getTime()
-    # print("Time to set: " + str(time_from_device))
+    # print(time_from_device)
 
     # interface.powerWiFiOn()
     # interface.powerWiFiOff()
@@ -27,11 +27,11 @@ try:
     # descriptions = interface.getNetworkDescriptions(maxNumberOfDescriptions)
     # # Not tested because of no device
     # for desc in descriptions:
-    #     print("SSID: " + desc.SSID)
+    #     print(desc)
 
     # interface.setWifiConfiguration("my_ssid", "my_password")
     # ssid = interface.getWifiConfiguration()
-    # print("SSID: " + desc.SSID)
+    # print(desc)
 
     # interface.setHostname("some_hostname")
     # hostname = interface.getHostname()
@@ -42,9 +42,9 @@ try:
 
     # maxNumberOfJobs = 5
     # jobs = interface.getJobList(maxNumberOfJobs)
-    # # Not tested because of no device
+    # Not tested because of no device
     # for j in jobs:
-    #     print("JOB NAME: " + j.name)
+    #     print(j)
 
     # numberOfMeasurements = 5
     # interface.addJob("job identification", "job description", numberOfMeasurements)
@@ -53,13 +53,13 @@ try:
 
     # maxNumberOfSamples = 10
     # job, time, result = interface.getJobResult("job identification", 0)
-    # print("JOB NAME: " + j.name)
-    # print("TIME: " + str(time))
-    # print("RESULT TEMP: " + result.temperature)
+    # print(j)
+    # print(time)
+    # print(result)
     # job, time, result, samples = interface.getJobResult("job identification", maxNumberOfSamples)
     # # Not tested because of no device
     # for s in samples:
-    #     print("SAMPLE TIMESTAMP: " + str(s.timeStamp))
+    #     print(s)
 
     # elepasedTimeInMs = interface.openShutter()
     # print("Timestamp open: " + elepasedTimeInMs)

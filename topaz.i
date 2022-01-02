@@ -2,6 +2,7 @@
 
 %{
 #include <sstream>
+#include <cstdlib>
 #include "Topaz_Cpp/TopazInterface.h"
 %}
 
@@ -154,8 +155,8 @@ struct DeviceInformation {
 %extend Xrite::Device_Cpp::Topaz::Job {
     const char *__str__() {
         static char temp[256];
-        sprintf(temp,"{ identifier: '%s', name: '%s', status: '%s' }", 
-		      (const char *)$self->identifier, (const char *)$self->name, Xrite_Device_Cpp_Topaz_Answer_toString($self->status));
+        sprintf(temp,"{ identifier: '%s', name: '%s', state: %u }", 
+		      (const char *)$self->identifier, (const char *)$self->name, $self->status);
         return &temp[0];
     }
 };
@@ -642,12 +643,20 @@ struct DeviceInformation {
 	}
 
 	PyObject *unlock(const char* key) {
-	    uint8_t _key[8];
+	    uint32_t libCode = 0;
 	    uint8_t unlockSuccessful = 0;
-		size_t len = strlen(key);
-		memset(_key, 0, 8);
-		memcpy(_key, key, len > 8? 8 : len);
-	    uint32_t libCode = $self->unlock(_key, unlockSuccessful);
+	    std::string str_key(key);
+	    size_t len = str_key.length();
+		if (len != 16) {
+		    SWIG_exception(SWIG_RuntimeError, "Key has to be an 8 byte hexadecimal value");
+		}
+
+		uint8_t bytes[8];
+		for (int i = 0; i < len - 1; i += 2) {   
+			bytes[i / 2] = (uint8_t) strtoul(str_key.substr(i, 2).c_str(), nullptr, 16);
+		}
+
+	    libCode = $self->unlock(bytes, unlockSuccessful);
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 		    static char temp[256];
 			sprintf(temp,"unlock() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
