@@ -2826,6 +2826,7 @@ namespace swig {
 }
 
 
+#include <sstream>
 #include "Topaz_Cpp/TopazInterface.h"
 
 
@@ -3020,6 +3021,71 @@ SWIG_From_unsigned_SS_char  (unsigned char value)
   return SWIG_From_unsigned_SS_long  (value);
 }
 
+SWIGINTERN char const *Xrite_Device_Cpp_Topaz_DeviceInformation___str__(Xrite::Device_Cpp::Topaz::DeviceInformation *self){
+        static std::ostringstream ss;
+		ss.str("");
+        ss.clear();
+
+		ss << "{";
+		ss << "serialNumber: '" << self->serialNumber << "', ";
+		ss << "whiteTile: '" << self->whiteTile << "', ";
+		ss << "calibrationDate: '" << self->calibrationDate << "', ";
+		ss << "instrumentType: '" << self->instrumentType << "', ";
+		ss << "numberOfAngles: '" << self->numberOfAngles << "', ";
+		ss << "angles: [";
+		for (int i = 0; i < Xrite::Device_Cpp::Topaz::MaxNumberOfAngles; ++i) {
+            ss << "'" << self->angles[i] << "',";
+		}
+		ss << "]";
+		ss << "}";
+
+		return ss.str().c_str();
+    }
+
+SWIGINTERN swig_type_info*
+SWIG_pchar_descriptor(void)
+{
+  static int init = 0;
+  static swig_type_info* info = 0;
+  if (!init) {
+    info = SWIG_TypeQuery("_p_char");
+    init = 1;
+  }
+  return info;
+}
+
+
+SWIGINTERNINLINE PyObject *
+SWIG_FromCharPtrAndSize(const char* carray, size_t size)
+{
+  if (carray) {
+    if (size > INT_MAX) {
+      swig_type_info* pchar_descriptor = SWIG_pchar_descriptor();
+      return pchar_descriptor ? 
+	SWIG_InternalNewPointerObj(const_cast< char * >(carray), pchar_descriptor, 0) : SWIG_Py_Void();
+    } else {
+#if PY_VERSION_HEX >= 0x03000000
+#if defined(SWIG_PYTHON_STRICT_BYTE_CHAR)
+      return PyBytes_FromStringAndSize(carray, static_cast< Py_ssize_t >(size));
+#else
+      return PyUnicode_DecodeUTF8(carray, static_cast< Py_ssize_t >(size), "surrogateescape");
+#endif
+#else
+      return PyString_FromStringAndSize(carray, static_cast< Py_ssize_t >(size));
+#endif
+    }
+  } else {
+    return SWIG_Py_Void();
+  }
+}
+
+
+SWIGINTERNINLINE PyObject * 
+SWIG_FromCharPtr(const char *cptr)
+{ 
+  return SWIG_FromCharPtrAndSize(cptr, (cptr ? strlen(cptr) : 0));
+}
+
 
 SWIGINTERNINLINE PyObject *
 SWIG_From_unsigned_SS_short  (unsigned short value)
@@ -3043,6 +3109,74 @@ SWIG_AsVal_unsigned_SS_int (PyObject * obj, unsigned int *val)
   return res;
 }
 
+SWIGINTERN char const *Xrite_Device_Cpp_Topaz_Answer_toString(uint32_t code){
+	    switch (code) {
+		case 0x2000: return "NotConnected";
+		case 0x2010: return "NoResponse";
+		case 0x2020: return "WrongResponse";
+		case 0x2030: return "ResponseFormatError";
+		case 0x2040: return "UnknownError";
+
+		case 0x2050: return "ContentError";
+		case 0x2060: return "UnknownDeviceTypeForLegacyCalculation";
+		case 0x3301: return "OK";
+		case 0x3302: return "UNKNOWN_CMD";
+		case 0x3303: return "NOT_ALL_READ";
+
+		case 0x3304: return "TEMP_SENSOR";
+		case 0x3305: return "PARAM_OUT_OF_RANGE";
+		case 0x3306: return "NAND_FLASH";
+		case 0x3309: return "MAX_SIZE";
+		case 0x330B: return "FILE_OPEN";
+
+		case 0x3310: return "FILE_DELETE";
+		case 0x3311: return "FILE_WRITE";
+		case 0x3312: return "FILE_READ";
+		case 0x3313: return "FILE_CLOSE";
+		case 0x3314: return "FILE_DIR";
+
+		case 0x3318: return "DATA_NOT_AVAILABLE";
+		case 0x3319: return "UNDEFINED";
+		case 0x331B: return "NO_LIGHT_DETECTED";
+		case 0x331D: return "AMBIENT_LIGHT";
+		case 0x331E: return "CALIBRATION_EXPIRED";
+
+		case 0x331F: return "RECOVER_USB";
+		case 0x3320: return "CALIB_DATA";
+		case 0x3321: return "OLD_CALIB_DATA";
+		case 0x3322: return "FILE_SYSTEM";
+		case 0x3323: return "SYSTEM_BUSY";
+
+		case 0x3324: return "SHUTTER_PROBABLY_NOT_CLOSED";
+		case 0x3326: return "NOT_CALIBRATED";
+		case 0x3327: return "UNKNOWN_CALIB_FORMAT";
+		case 0x3328: return "CRC32";
+		case 0x3329: return "DATA_FLASH";
+
+		case 0x332A: return "ZERO_SIZE";
+		case 0x332B: return "NO_ACCESS";
+		case 0x332D: return "BLUETOOTH_CONFIG";
+		case 0x332E: return "CHIP_ID_CRC";
+		case 0x332F: return "NOT_IMPLEMENTED_YET";
+
+		case 0x3330: return "JOB_ALREADY_DEFINED";
+		case 0x3331: return "JOB_NOT_CREATED";
+		case 0x3332: return "JOB_NOT_FOUND";
+		case 0x3333: return "JOB_NOT_DELETED";
+		case 0x3334: return "JOB_LIST_FULL";
+
+		case 0x3335: return "SHUTTER";
+		case 0x3336: return "NOT_INITIALIZED";
+		case 0x3337: return "WHITE_CAL";
+		case 0x3430: return "DeviceLocked";
+		case 0x3500: return "WIFI_POWER_OFF";
+
+		case 0x3501: return "WIFI_INACTIVE";
+		case 0x3502: return "NO_WIFI_CMD";
+		case 0x3503: return "WIFI_BUSY";
+	    default: return "This code is not implemented in SWIG file";
+		}
+	}
 SWIGINTERN bool Xrite_Device_Cpp_Topaz_Answer_isOk(uint32_t code){
         return Xrite::Device_Cpp::Topaz::Answer::OK == code;
 	}
@@ -3093,56 +3227,11 @@ SWIGINTERN Xrite::Device_Cpp::Topaz::Time *new_Xrite_Device_Cpp_Topaz_Time(uint1
 SWIGINTERN void delete_Xrite_Device_Cpp_Topaz_Time(Xrite::Device_Cpp::Topaz::Time *self){
 		delete self;
 	}
-SWIGINTERN char *Xrite_Device_Cpp_Topaz_Time___str__(Xrite::Device_Cpp::Topaz::Time *self){
+SWIGINTERN char const *Xrite_Device_Cpp_Topaz_Time___str__(Xrite::Device_Cpp::Topaz::Time *self){
         static char temp[256];
         sprintf(temp,"{ %d-%02d-%02d %02d:%02d:%02d }", self->year, self->month, self->day, self->hour, self->minute, self->second);
         return &temp[0];
     }
-
-SWIGINTERN swig_type_info*
-SWIG_pchar_descriptor(void)
-{
-  static int init = 0;
-  static swig_type_info* info = 0;
-  if (!init) {
-    info = SWIG_TypeQuery("_p_char");
-    init = 1;
-  }
-  return info;
-}
-
-
-SWIGINTERNINLINE PyObject *
-SWIG_FromCharPtrAndSize(const char* carray, size_t size)
-{
-  if (carray) {
-    if (size > INT_MAX) {
-      swig_type_info* pchar_descriptor = SWIG_pchar_descriptor();
-      return pchar_descriptor ? 
-	SWIG_InternalNewPointerObj(const_cast< char * >(carray), pchar_descriptor, 0) : SWIG_Py_Void();
-    } else {
-#if PY_VERSION_HEX >= 0x03000000
-#if defined(SWIG_PYTHON_STRICT_BYTE_CHAR)
-      return PyBytes_FromStringAndSize(carray, static_cast< Py_ssize_t >(size));
-#else
-      return PyUnicode_DecodeUTF8(carray, static_cast< Py_ssize_t >(size), "surrogateescape");
-#endif
-#else
-      return PyString_FromStringAndSize(carray, static_cast< Py_ssize_t >(size));
-#endif
-    }
-  } else {
-    return SWIG_Py_Void();
-  }
-}
-
-
-SWIGINTERNINLINE PyObject * 
-SWIG_FromCharPtr(const char *cptr)
-{ 
-  return SWIG_FromCharPtrAndSize(cptr, (cptr ? strlen(cptr) : 0));
-}
-
 
 SWIGINTERNINLINE PyObject*
   SWIG_From_int  (int value)
@@ -3150,9 +3239,10 @@ SWIGINTERNINLINE PyObject*
   return PyInt_FromLong((long) value);
 }
 
-SWIGINTERN char *Xrite_Device_Cpp_Topaz_Job___str__(Xrite::Device_Cpp::Topaz::Job *self){
+SWIGINTERN char const *Xrite_Device_Cpp_Topaz_Job___str__(Xrite::Device_Cpp::Topaz::Job *self){
         static char temp[256];
-        sprintf(temp,"{ identifier: '%s', name: '%s', status: %d }", (const char *)self->identifier, (const char *)self->name, self->status);
+        sprintf(temp,"{ identifier: '%s', name: '%s', status: '%s' }", 
+		      (const char *)self->identifier, (const char *)self->name, Xrite_Device_Cpp_Topaz_Answer_toString(self->status));
         return &temp[0];
     }
 
@@ -3225,6 +3315,38 @@ SWIG_From_float  (float value)
   return SWIG_From_double  (value);
 }
 
+SWIGINTERN char const *Xrite_Device_Cpp_Topaz_Sample___str__(Xrite::Device_Cpp::Topaz::Sample *self){
+        static std::ostringstream ss;
+		ss.str("");
+        ss.clear();
+
+		ss << "{ time: '" << self->timeStamp.year << "-" << self->timeStamp.month << "-" << self->timeStamp.day << " "
+		   << self->timeStamp.hour << ":" << self->timeStamp.minute << ":" << self->timeStamp.second << "', ";
+
+		ss << "temperature: " << self->temperature << ", ";
+
+		ss << "spectralValues: [";
+		for (int i = 0; i < Xrite::Device_Cpp::Topaz::MaxNumberOfAngles; ++i) {
+		    ss << "[";
+		    for (int j = 0; j < Xrite::Device_Cpp::Topaz::Sample::NumberOfSpectralValues; ++j) {
+		        ss << self->spectralValues[i][j] << ",";
+		    }
+			ss << "],";
+		}
+		ss << "]";
+
+        ss << "LabCh: [";
+		for (int i = 0; i < Xrite::Device_Cpp::Topaz::MaxNumberOfAngles; ++i) {
+		    ss << "[";
+		    for (int j = 0; j < (sizeof(self->LabCh[i]) / sizeof(self->LabCh[i][0])); ++j) {
+		        ss << self->LabCh[i][j] << ",";
+		    }
+			ss << "],";
+		}
+		ss << "]}";
+
+		return ss.str().c_str();
+    }
 
 SWIGINTERN int
 SWIG_AsVal_long (PyObject *obj, long* val)
@@ -3291,6 +3413,23 @@ SWIG_From_short  (short value)
   return SWIG_From_long  (value);
 }
 
+SWIGINTERN char const *Xrite_Device_Cpp_Topaz_NetworkDescription___str__(Xrite::Device_Cpp::Topaz::NetworkDescription *self){
+        static std::ostringstream ss;
+		ss.str("");
+        ss.clear();
+
+		ss << "{ ";
+		ss << "SSID: '" << self->SSID << "', ";
+		ss << "MACAddress: '" << self->MACAddress << "', ";
+		ss << "authentification: '" << self->authentification << "', ";
+		ss << "signalLevel: " << self->signalLevel << ", ";
+		ss << "channel: " << self->channel << ", ";
+		ss << "mode: " << self->mode << ", ";
+		ss << "rate: " << self->rate << ", ";
+		ss << " }";
+
+		return ss.str().c_str();
+    }
 
 SWIGINTERN int
 SWIG_AsVal_int (PyObject * obj, int *val)
@@ -3312,7 +3451,7 @@ SWIGINTERN PyObject *Xrite_Device_Cpp_Topaz_TopazInterface_isInMeasureMode__SWIG
 		uint32_t libCode = self->isInMeasureMode(isInMeasureMode);
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 			static char temp[256];
-			sprintf(temp,"isInMeasureMode() error code 0x%04x", libCode);
+			sprintf(temp,"isInMeasureMode() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
 		return PyBool_FromLong(isInMeasureMode);
@@ -3327,7 +3466,7 @@ SWIGINTERN PyObject *Xrite_Device_Cpp_Topaz_TopazInterface_getSelftestReport__SW
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 		    delete[] buffer;
 			static char temp[256];
-			sprintf(temp,"getSelftestReport() error code 0x%04x", libCode);
+			sprintf(temp,"getSelftestReport() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
 		pyBuffer = PyBytes_FromStringAndSize((const char *)buffer, actualBufferSize);
@@ -3344,7 +3483,7 @@ SWIGINTERN PyObject *Xrite_Device_Cpp_Topaz_TopazInterface_getDeviceLog__SWIG_1(
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 		    delete[] buffer;
 			static char temp[256];
-			sprintf(temp,"getDeviceLog() error code 0x%04x", libCode);
+			sprintf(temp,"getDeviceLog() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
 		pyBuffer = PyBytes_FromStringAndSize((const char *)buffer, actualBufferSize);
@@ -3469,7 +3608,7 @@ SWIGINTERN void Xrite_Device_Cpp_Topaz_TopazInterface_startMeasureMode__SWIG_1(X
 		uint32_t libCode = self->startMeasureMode((const uint8_t*) identification);
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 			static char temp[256];
-			sprintf(temp,"startMeasureMode() error code 0x%04x", libCode);
+			sprintf(temp,"startMeasureMode() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
 		return;
@@ -3481,7 +3620,7 @@ SWIGINTERN PyObject *Xrite_Device_Cpp_Topaz_TopazInterface_getFirmwareInformatio
         uint32_t libCode = self->getFirmwareInformation(firmwareIdentification);
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 			static char temp[256];
-			sprintf(temp,"getFirmwareInformation() error code 0x%04x", libCode);
+			sprintf(temp,"getFirmwareInformation() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
         return PyString_FromString((char *)firmwareIdentification);
@@ -3493,7 +3632,7 @@ SWIGINTERN PyObject *Xrite_Device_Cpp_Topaz_TopazInterface_getMacAddress__SWIG_1
         uint32_t libCode = self->getMacAddress(macAddress);
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 			static char temp[256];
-			sprintf(temp,"getMacAddress() error code 0x%04x", libCode);
+			sprintf(temp,"getMacAddress() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
         return PyString_FromString((char *)macAddress);
@@ -3502,11 +3641,11 @@ SWIGINTERN PyObject *Xrite_Device_Cpp_Topaz_TopazInterface_getMacAddress__SWIG_1
     }
 SWIGINTERN PyObject *Xrite_Device_Cpp_Topaz_TopazInterface_getDeviceInformation__SWIG_1(Xrite::Device_Cpp::Topaz::TopazInterface *self){
 	    Xrite::Device_Cpp::Topaz::DeviceInformation* info = new Xrite::Device_Cpp::Topaz::DeviceInformation;
-		uint32_t libCode = self->getDeviceInformation(info->serialNumber, info->whiteTile, info->calibrationDate, info->instrumentType, (uint8_t*) info->angles, info->numberOfAngles);
+		uint32_t libCode = self->getDeviceInformation(info->serialNumber, info->whiteTile, info->calibrationDate, info->instrumentType, (uint8_t *) info->angles, info->numberOfAngles);
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 		    delete info;
 		    static char temp[256];
-			sprintf(temp,"getDeviceInformation() error code 0x%04x", libCode);
+			sprintf(temp,"getDeviceInformation() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
 	    return SWIG_NewPointerObj(info, SWIGTYPE_p_Xrite__Device_Cpp__Topaz__DeviceInformation, SWIG_POINTER_OWN);
@@ -3518,7 +3657,7 @@ SWIGINTERN uint16_t Xrite_Device_Cpp_Topaz_TopazInterface_openShutter__SWIG_1(Xr
         uint32_t libCode = self->openShutter(1, elepasedTimeInMs);
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 			static char temp[256];
-			sprintf(temp,"openShutter() error code 0x%04x", libCode);
+			sprintf(temp,"openShutter() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
         return elepasedTimeInMs;
@@ -3530,7 +3669,7 @@ SWIGINTERN uint16_t Xrite_Device_Cpp_Topaz_TopazInterface_closeShutter(Xrite::De
         uint32_t libCode = self->openShutter(0, elepasedTimeInMs);
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 			static char temp[256];
-			sprintf(temp,"closeShutter() error code 0x%04x", libCode);
+			sprintf(temp,"closeShutter() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
         return elepasedTimeInMs;
@@ -3553,7 +3692,7 @@ SWIGINTERN PyObject *Xrite_Device_Cpp_Topaz_TopazInterface_getJobResult__SWIG_5(
 			    delete[] samples;
 		    }
 			static char temp[256];
-			sprintf(temp,"getJobResult() error code 0x%04x", libCode);
+			sprintf(temp,"getJobResult() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
 
@@ -3577,7 +3716,7 @@ SWIGINTERN void Xrite_Device_Cpp_Topaz_TopazInterface_deleteJob__SWIG_1(Xrite::D
 		uint32_t libCode = self->deleteJob((const uint8_t*) identification);
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 			static char temp[256];
-			sprintf(temp,"deleteJob() error code 0x%04x", libCode);
+			sprintf(temp,"deleteJob() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
 		return;
@@ -3588,7 +3727,7 @@ SWIGINTERN void Xrite_Device_Cpp_Topaz_TopazInterface_addJob__SWIG_1(Xrite::Devi
 		uint32_t libCode = self->addJob((const uint8_t*) identification, (const uint8_t*) description, numberOfMeasurements);
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 			static char temp[256];
-			sprintf(temp,"addJob() error code 0x%04x", libCode);
+			sprintf(temp,"addJob() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
 		return;
@@ -3603,7 +3742,7 @@ SWIGINTERN PyObject *Xrite_Device_Cpp_Topaz_TopazInterface_getJobList__SWIG_1(Xr
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 		    delete[] jobs;
 			static char temp[256];
-			sprintf(temp,"getJobList() error code 0x%04x", libCode);
+			sprintf(temp,"getJobList() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
 		pyJobs = PyList_New(actualNumberOfJobs);
@@ -3622,7 +3761,7 @@ SWIGINTERN uint16_t Xrite_Device_Cpp_Topaz_TopazInterface_getTotalNumberOfJobs__
         uint32_t libCode = self->getTotalNumberOfJobs(totalNumberOfJobs);
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 			static char temp[256];
-			sprintf(temp,"getTotalNumberOfJobs() error code 0x%04x", libCode);
+			sprintf(temp,"getTotalNumberOfJobs() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
         return totalNumberOfJobs;
@@ -3634,7 +3773,7 @@ SWIGINTERN PyObject *Xrite_Device_Cpp_Topaz_TopazInterface_getHostname__SWIG_1(X
         uint32_t libCode = self->getHostname(hostname);
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 			static char temp[256];
-			sprintf(temp,"getHostname() error code 0x%04x", libCode);
+			sprintf(temp,"getHostname() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
         return PyString_FromString((char *)hostname);
@@ -3645,7 +3784,7 @@ SWIGINTERN void Xrite_Device_Cpp_Topaz_TopazInterface_setHostname__SWIG_1(Xrite:
 		uint32_t libCode = self->setHostname((const uint8_t*) hostname);
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 			static char temp[256];
-			sprintf(temp,"setHostname() error code 0x%04x", libCode);
+			sprintf(temp,"setHostname() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
 		return;
@@ -3657,7 +3796,7 @@ SWIGINTERN PyObject *Xrite_Device_Cpp_Topaz_TopazInterface_getWifiConfiguration_
         uint32_t libCode = self->getWifiConfiguration(ssid);
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 			static char temp[256];
-			sprintf(temp,"getWifiConfiguration() error code 0x%04x", libCode);
+			sprintf(temp,"getWifiConfiguration() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
         return PyString_FromString((char *)ssid);
@@ -3668,7 +3807,7 @@ SWIGINTERN void Xrite_Device_Cpp_Topaz_TopazInterface_setWifiConfiguration__SWIG
 		uint32_t libCode = self->setWifiConfiguration((const uint8_t*) ssid, (const uint8_t*) password);
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 			static char temp[256];
-			sprintf(temp,"setWifiConfiguration() error code 0x%04x", libCode);
+			sprintf(temp,"setWifiConfiguration() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
 		return;
@@ -3683,7 +3822,7 @@ SWIGINTERN PyObject *Xrite_Device_Cpp_Topaz_TopazInterface_getNetworkDescription
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 		    delete[] descriptions;
 			static char temp[256];
-			sprintf(temp,"getNetworkDescriptions() error code 0x%04x", libCode);
+			sprintf(temp,"getNetworkDescriptions() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
 		pyDescriptions = PyList_New(actualNumberOfDescriptions);
@@ -3703,7 +3842,7 @@ SWIGINTERN PyObject *Xrite_Device_Cpp_Topaz_TopazInterface_getTime__SWIG_1(Xrite
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 		    delete time;
 		    static char temp[256];
-			sprintf(temp,"getTime() error code 0x%04x", libCode);
+			sprintf(temp,"getTime() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
 	    return SWIG_NewPointerObj(time, SWIGTYPE_p_Xrite__Device_Cpp__Topaz__Time, SWIG_POINTER_OWN);
@@ -3716,7 +3855,7 @@ SWIGINTERN PyObject *Xrite_Device_Cpp_Topaz_TopazInterface_getVersion__SWIG_1(Xr
         uint32_t libCode = self->getVersion(version, legacyVersion);
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 			static char temp[256];
-			sprintf(temp,"getVersion() error code 0x%04x", libCode);
+			sprintf(temp,"getVersion() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
         return Py_BuildValue("(s,s)", (char *)version, (char *)legacyVersion);
@@ -3727,7 +3866,7 @@ SWIGINTERN void Xrite_Device_Cpp_Topaz_TopazInterface_wifiConnect(Xrite::Device_
 	    uint32_t libCode = self->connect((const uint8_t* )address);
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 			static char temp[256];
-			sprintf(temp,"wifiConnect() error code 0x%04x", libCode);
+			sprintf(temp,"wifiConnect() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
         return;
@@ -3738,7 +3877,7 @@ SWIGINTERN void Xrite_Device_Cpp_Topaz_TopazInterface_usbConnect(Xrite::Device_C
 	    uint32_t libCode = self->connect(nullptr);
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 			static char temp[256];
-			sprintf(temp,"usbConnect() error code 0x%04x", libCode);
+			sprintf(temp,"usbConnect() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
         return;
@@ -3754,7 +3893,7 @@ SWIGINTERN PyObject *Xrite_Device_Cpp_Topaz_TopazInterface_unlock__SWIG_1(Xrite:
 	    uint32_t libCode = self->unlock(_key, unlockSuccessful);
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 		    static char temp[256];
-			sprintf(temp,"unlock() error code 0x%04x", libCode);
+			sprintf(temp,"unlock() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
 	    return PyBool_FromLong(unlockSuccessful);
@@ -4118,6 +4257,29 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DeviceInformation___str__(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Xrite::Device_Cpp::Topaz::DeviceInformation *arg1 = (Xrite::Device_Cpp::Topaz::DeviceInformation *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  char *result = 0 ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Xrite__Device_Cpp__Topaz__DeviceInformation, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DeviceInformation___str__" "', argument " "1"" of type '" "Xrite::Device_Cpp::Topaz::DeviceInformation *""'"); 
+  }
+  arg1 = reinterpret_cast< Xrite::Device_Cpp::Topaz::DeviceInformation * >(argp1);
+  result = (char *)Xrite_Device_Cpp_Topaz_DeviceInformation___str__(arg1);
+  resultobj = SWIG_FromCharPtr((const char *)result);
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_new_DeviceInformation(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   Xrite::Device_Cpp::Topaz::DeviceInformation *result = 0 ;
@@ -4163,6 +4325,29 @@ SWIGINTERN PyObject *DeviceInformation_swigregister(PyObject *SWIGUNUSEDPARM(sel
 SWIGINTERN PyObject *DeviceInformation_swiginit(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   return SWIG_Python_InitShadowInstance(args);
 }
+
+SWIGINTERN PyObject *_wrap_Answer_toString(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  uint32_t arg1 ;
+  unsigned int val1 ;
+  int ecode1 = 0 ;
+  PyObject *swig_obj[1] ;
+  char *result = 0 ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  ecode1 = SWIG_AsVal_unsigned_SS_int(swig_obj[0], &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "Answer_toString" "', argument " "1"" of type '" "uint32_t""'");
+  } 
+  arg1 = static_cast< uint32_t >(val1);
+  result = (char *)Xrite_Device_Cpp_Topaz_Answer_toString(arg1);
+  resultobj = SWIG_FromCharPtr((const char *)result);
+  return resultobj;
+fail:
+  return NULL;
+}
+
 
 SWIGINTERN PyObject *_wrap_Answer_isOk(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
@@ -5346,6 +5531,29 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_Sample___str__(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Xrite::Device_Cpp::Topaz::Sample *arg1 = (Xrite::Device_Cpp::Topaz::Sample *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  char *result = 0 ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Xrite__Device_Cpp__Topaz__Sample, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Sample___str__" "', argument " "1"" of type '" "Xrite::Device_Cpp::Topaz::Sample *""'"); 
+  }
+  arg1 = reinterpret_cast< Xrite::Device_Cpp::Topaz::Sample * >(argp1);
+  result = (char *)Xrite_Device_Cpp_Topaz_Sample___str__(arg1);
+  resultobj = SWIG_FromCharPtr((const char *)result);
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_new_Sample(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   Xrite::Device_Cpp::Topaz::Sample *result = 0 ;
@@ -6008,6 +6216,29 @@ SWIGINTERN PyObject *_wrap_NetworkDescription_rate_get(PyObject *SWIGUNUSEDPARM(
   arg1 = reinterpret_cast< Xrite::Device_Cpp::Topaz::NetworkDescription * >(argp1);
   result = (float) ((arg1)->rate);
   resultobj = SWIG_From_float(static_cast< float >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_NetworkDescription___str__(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Xrite::Device_Cpp::Topaz::NetworkDescription *arg1 = (Xrite::Device_Cpp::Topaz::NetworkDescription *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  char *result = 0 ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Xrite__Device_Cpp__Topaz__NetworkDescription, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "NetworkDescription___str__" "', argument " "1"" of type '" "Xrite::Device_Cpp::Topaz::NetworkDescription *""'"); 
+  }
+  arg1 = reinterpret_cast< Xrite::Device_Cpp::Topaz::NetworkDescription * >(argp1);
+  result = (char *)Xrite_Device_Cpp_Topaz_NetworkDescription___str__(arg1);
+  resultobj = SWIG_FromCharPtr((const char *)result);
   return resultobj;
 fail:
   return NULL;
@@ -9474,10 +9705,12 @@ static PyMethodDef SwigMethods[] = {
 	 { "DeviceInformation_angles_get", _wrap_DeviceInformation_angles_get, METH_O, NULL},
 	 { "DeviceInformation_numberOfAngles_set", _wrap_DeviceInformation_numberOfAngles_set, METH_VARARGS, NULL},
 	 { "DeviceInformation_numberOfAngles_get", _wrap_DeviceInformation_numberOfAngles_get, METH_O, NULL},
+	 { "DeviceInformation___str__", _wrap_DeviceInformation___str__, METH_O, NULL},
 	 { "new_DeviceInformation", _wrap_new_DeviceInformation, METH_NOARGS, NULL},
 	 { "delete_DeviceInformation", _wrap_delete_DeviceInformation, METH_O, NULL},
 	 { "DeviceInformation_swigregister", DeviceInformation_swigregister, METH_O, NULL},
 	 { "DeviceInformation_swiginit", DeviceInformation_swiginit, METH_VARARGS, NULL},
+	 { "Answer_toString", _wrap_Answer_toString, METH_O, NULL},
 	 { "Answer_isOk", _wrap_Answer_isOk, METH_O, NULL},
 	 { "Answer_isFail", _wrap_Answer_isFail, METH_O, NULL},
 	 { "new_Answer", _wrap_new_Answer, METH_NOARGS, NULL},
@@ -9528,6 +9761,7 @@ static PyMethodDef SwigMethods[] = {
 	 { "Sample_spectralValues_get", _wrap_Sample_spectralValues_get, METH_O, NULL},
 	 { "Sample_LabCh_set", _wrap_Sample_LabCh_set, METH_VARARGS, NULL},
 	 { "Sample_LabCh_get", _wrap_Sample_LabCh_get, METH_O, NULL},
+	 { "Sample___str__", _wrap_Sample___str__, METH_O, NULL},
 	 { "new_Sample", _wrap_new_Sample, METH_NOARGS, NULL},
 	 { "delete_Sample", _wrap_delete_Sample, METH_O, NULL},
 	 { "Sample_swigregister", Sample_swigregister, METH_O, NULL},
@@ -9556,6 +9790,7 @@ static PyMethodDef SwigMethods[] = {
 	 { "NetworkDescription_mode_get", _wrap_NetworkDescription_mode_get, METH_O, NULL},
 	 { "NetworkDescription_rate_set", _wrap_NetworkDescription_rate_set, METH_VARARGS, NULL},
 	 { "NetworkDescription_rate_get", _wrap_NetworkDescription_rate_get, METH_O, NULL},
+	 { "NetworkDescription___str__", _wrap_NetworkDescription___str__, METH_O, NULL},
 	 { "new_NetworkDescription", _wrap_new_NetworkDescription, METH_NOARGS, NULL},
 	 { "delete_NetworkDescription", _wrap_delete_NetworkDescription, METH_O, NULL},
 	 { "NetworkDescription_swigregister", NetworkDescription_swigregister, METH_O, NULL},

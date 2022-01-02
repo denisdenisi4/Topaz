@@ -31,7 +31,7 @@ try:
 
     # interface.setWifiConfiguration("my_ssid", "my_password")
     # ssid = interface.getWifiConfiguration()
-    # print
+    # print("SSID: " + desc.SSID)
 
     # interface.setHostname("some_hostname")
     # hostname = interface.getHostname()
@@ -67,7 +67,7 @@ try:
     # print("Timestamp close: " + elepasedTimeInMs)
 
     # device_info = interface.getDeviceInformation()
-    # print("Device serial number: " + device_info.serialNumber)
+    # print(device_info)
 
     # macAddress = interface.getMacAddress()
     # print("Mac address: " + macAddress)

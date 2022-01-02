@@ -71,6 +71,9 @@ class DeviceInformation(object):
     angles = property(_Topaz.DeviceInformation_angles_get, _Topaz.DeviceInformation_angles_set)
     numberOfAngles = property(_Topaz.DeviceInformation_numberOfAngles_get, _Topaz.DeviceInformation_numberOfAngles_set)
 
+    def __str__(self):
+        return _Topaz.DeviceInformation___str__(self)
+
     def __init__(self):
         _Topaz.DeviceInformation_swiginit(self, _Topaz.new_DeviceInformation())
     __swig_destroy__ = _Topaz.delete_DeviceInformation
@@ -136,6 +139,10 @@ class Answer(object):
     WIFI_BUSY = _Topaz.Answer_WIFI_BUSY
 
     @staticmethod
+    def toString(code):
+        return _Topaz.Answer_toString(code)
+
+    @staticmethod
     def isOk(code):
         return _Topaz.Answer_isOk(code)
 
@@ -149,6 +156,9 @@ class Answer(object):
 
 # Register Answer in _Topaz:
 _Topaz.Answer_swigregister(Answer)
+
+def Answer_toString(code):
+    return _Topaz.Answer_toString(code)
 
 def Answer_isOk(code):
     return _Topaz.Answer_isOk(code)
@@ -220,6 +230,9 @@ class Sample(object):
     spectralValues = property(_Topaz.Sample_spectralValues_get, _Topaz.Sample_spectralValues_set)
     LabCh = property(_Topaz.Sample_LabCh_get, _Topaz.Sample_LabCh_set)
 
+    def __str__(self):
+        return _Topaz.Sample___str__(self)
+
     def __init__(self):
         _Topaz.Sample_swiginit(self, _Topaz.new_Sample())
     __swig_destroy__ = _Topaz.delete_Sample
@@ -251,6 +264,9 @@ class NetworkDescription(object):
     channel = property(_Topaz.NetworkDescription_channel_get, _Topaz.NetworkDescription_channel_set)
     mode = property(_Topaz.NetworkDescription_mode_get, _Topaz.NetworkDescription_mode_set)
     rate = property(_Topaz.NetworkDescription_rate_get, _Topaz.NetworkDescription_rate_set)
+
+    def __str__(self):
+        return _Topaz.NetworkDescription___str__(self)
 
     def __init__(self):
         _Topaz.NetworkDescription_swiginit(self, _Topaz.new_NetworkDescription())
