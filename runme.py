@@ -1,7 +1,7 @@
 import Topaz
 
 try:
-    TEST_ON_REAL_DEVICE = False
+    TEST_ON_REAL_DEVICE = True
     interface = Topaz.getTopazInterface() if TEST_ON_REAL_DEVICE else Topaz.getTopazSimulation()
 
     version, legacyVersion = interface.getVersion()
