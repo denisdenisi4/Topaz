@@ -2996,41 +2996,6 @@ SWIG_AsCharArray(PyObject * obj, char *val, size_t size)
 }
 
 
-SWIGINTERNINLINE PyObject *
-SWIG_FromCharPtrAndSize(const char* carray, size_t size)
-{
-  if (carray) {
-    if (size > INT_MAX) {
-      swig_type_info* pchar_descriptor = SWIG_pchar_descriptor();
-      return pchar_descriptor ? 
-	SWIG_InternalNewPointerObj(const_cast< char * >(carray), pchar_descriptor, 0) : SWIG_Py_Void();
-    } else {
-#if PY_VERSION_HEX >= 0x03000000
-#if defined(SWIG_PYTHON_STRICT_BYTE_CHAR)
-      return PyBytes_FromStringAndSize(carray, static_cast< Py_ssize_t >(size));
-#else
-      return PyUnicode_DecodeUTF8(carray, static_cast< Py_ssize_t >(size), "surrogateescape");
-#endif
-#else
-      return PyString_FromStringAndSize(carray, static_cast< Py_ssize_t >(size));
-#endif
-    }
-  } else {
-    return SWIG_Py_Void();
-  }
-}
-
-
-SWIGINTERN size_t
-SWIG_strnlen(const char* s, size_t maxlen)
-{
-  const char *p;
-  for (p = s; maxlen-- && *p; p++)
-    ;
-  return p - s;
-}
-
-
 #include <limits.h>
 #if !defined(SWIG_NO_LLONG_MAX)
 # if !defined(LLONG_MAX) && defined(__GNUC__) && defined (__LONG_LONG_MAX__)
@@ -3206,17 +3171,15 @@ SWIG_From_unsigned_SS_char  (unsigned char value)
 
 SWIGINTERN PyObject *Xrite_Device_Cpp_Topaz_DeviceInformation___str__(Xrite::Device_Cpp::Topaz::DeviceInformation *self){
         std::ostringstream ss;
-		ss.str("");
-        ss.clear();
 
 		ss << "{";
 		ss << "serialNumber: '" << self->serialNumber << "', ";
 		ss << "whiteTile: '" << self->whiteTile << "', ";
 		ss << "calibrationDate: '" << self->calibrationDate << "', ";
 		ss << "instrumentType: '" << self->instrumentType << "', ";
-		ss << "numberOfAngles: '" << self->numberOfAngles << "', ";
+		ss << "numberOfAngles: '" << (int) self->numberOfAngles << "', ";
 		ss << "angles: [";
-		for (int i = 0; i < Xrite::Device_Cpp::Topaz::MaxNumberOfAngles; ++i) {
+		for (int i = 0; i < (int) self->numberOfAngles; ++i) {
             ss << "'" << self->angles[i] << "',";
 		}
 		ss << "]";
@@ -3315,6 +3278,31 @@ SWIGINTERN char const *Xrite_Device_Cpp_Topaz_Answer_toString(uint32_t code){
 	    default: return "This code is not implemented in SWIG file";
 		}
 	}
+
+SWIGINTERNINLINE PyObject *
+SWIG_FromCharPtrAndSize(const char* carray, size_t size)
+{
+  if (carray) {
+    if (size > INT_MAX) {
+      swig_type_info* pchar_descriptor = SWIG_pchar_descriptor();
+      return pchar_descriptor ? 
+	SWIG_InternalNewPointerObj(const_cast< char * >(carray), pchar_descriptor, 0) : SWIG_Py_Void();
+    } else {
+#if PY_VERSION_HEX >= 0x03000000
+#if defined(SWIG_PYTHON_STRICT_BYTE_CHAR)
+      return PyBytes_FromStringAndSize(carray, static_cast< Py_ssize_t >(size));
+#else
+      return PyUnicode_DecodeUTF8(carray, static_cast< Py_ssize_t >(size), "surrogateescape");
+#endif
+#else
+      return PyString_FromStringAndSize(carray, static_cast< Py_ssize_t >(size));
+#endif
+    }
+  } else {
+    return SWIG_Py_Void();
+  }
+}
+
 
 SWIGINTERNINLINE PyObject * 
 SWIG_FromCharPtr(const char *cptr)
@@ -3463,8 +3451,7 @@ SWIG_From_float  (float value)
 SWIGINTERN PyObject *Xrite_Device_Cpp_Topaz_Sample___str__(Xrite::Device_Cpp::Topaz::Sample *self){
         std::ostringstream ss;
 
-		ss << "{ time: '" << self->timeStamp.year << "-" << self->timeStamp.month << "-" << self->timeStamp.day << " "
-		   << self->timeStamp.hour << ":" << self->timeStamp.minute << ":" << self->timeStamp.second << "', ";
+		ss << "{ time: '" << Xrite_Device_Cpp_Topaz_Time___str__(& self->timeStamp) << "', ";
 
 		ss << "temperature: " << self->temperature << ", ";
 
@@ -3730,9 +3717,9 @@ SWIGINTERN PyObject *Xrite_Device_Cpp_Topaz_TopazInterface_getJobResult__SWIG_5(
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
 
-		pyJob = SWIG_NewPointerObj(time, SWIGTYPE_p_Xrite__Device_Cpp__Topaz__Job, SWIG_POINTER_OWN);
+		pyJob = SWIG_NewPointerObj(job, SWIGTYPE_p_Xrite__Device_Cpp__Topaz__Job, SWIG_POINTER_OWN);
 		pyTime = SWIG_NewPointerObj(time, SWIGTYPE_p_Xrite__Device_Cpp__Topaz__Time, SWIG_POINTER_OWN);
-		pyResult = SWIG_NewPointerObj(time, SWIGTYPE_p_Xrite__Device_Cpp__Topaz__Sample, SWIG_POINTER_OWN);
+		pyResult = SWIG_NewPointerObj(result, SWIGTYPE_p_Xrite__Device_Cpp__Topaz__Sample, SWIG_POINTER_OWN);
 		if (maxNumberOfSamples > 0) {
 			pySamples = PyList_New(actualNumberOfSamples);
 			for (uint8_t i = 0; i < actualNumberOfSamples; ++i) {
@@ -3746,27 +3733,27 @@ SWIGINTERN PyObject *Xrite_Device_Cpp_Topaz_TopazInterface_getJobResult__SWIG_5(
 		fail:
 	    return nullptr;
 	}
-SWIGINTERN PyObject *Xrite_Device_Cpp_Topaz_TopazInterface_deleteJob__SWIG_1(Xrite::Device_Cpp::Topaz::TopazInterface *self,char const *identification){
+SWIGINTERN void Xrite_Device_Cpp_Topaz_TopazInterface_deleteJob__SWIG_1(Xrite::Device_Cpp::Topaz::TopazInterface *self,char const *identification){
 		uint32_t libCode = self->deleteJob((const uint8_t*) identification);
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 			static char temp[256];
 			sprintf(temp,"deleteJob() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
-		return nullptr;
+		return;
 		fail:
-	    return nullptr;
+	    return;
 	}
-SWIGINTERN PyObject *Xrite_Device_Cpp_Topaz_TopazInterface_addJob__SWIG_1(Xrite::Device_Cpp::Topaz::TopazInterface *self,char const *identification,char const *description,uint8_t numberOfMeasurements){
+SWIGINTERN void Xrite_Device_Cpp_Topaz_TopazInterface_addJob__SWIG_1(Xrite::Device_Cpp::Topaz::TopazInterface *self,char const *identification,char const *description,uint8_t numberOfMeasurements){
 		uint32_t libCode = self->addJob((const uint8_t*) identification, (const uint8_t*) description, numberOfMeasurements);
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 			static char temp[256];
 			sprintf(temp,"addJob() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
-		return nullptr;
+		return;
 		fail:
-	    return nullptr;
+	    return;
 	}
 SWIGINTERN PyObject *Xrite_Device_Cpp_Topaz_TopazInterface_getJobList__SWIG_1(Xrite::Device_Cpp::Topaz::TopazInterface *self,uint16_t maxNumberOfJobs){
 	    PyObject *pyJobs = nullptr;
@@ -3991,13 +3978,9 @@ SWIGINTERN PyObject *_wrap_DeviceInformation_serialNumber_get(PyObject *SWIGUNUS
   }
   arg1 = reinterpret_cast< Xrite::Device_Cpp::Topaz::DeviceInformation * >(argp1);
   result = (char *)(char *) ((arg1)->serialNumber);
-  {
-    size_t size = SWIG_strnlen(result, Xrite::Device_Cpp::Topaz::MaxStringLength);
-    
-    
-    
-    resultobj = SWIG_FromCharPtrAndSize(result, size);
-  }
+  
+  resultobj = PyUnicode_FromString(reinterpret_cast<char*>(result));
+  
   return resultobj;
 fail:
   return NULL;
@@ -4050,13 +4033,9 @@ SWIGINTERN PyObject *_wrap_DeviceInformation_whiteTile_get(PyObject *SWIGUNUSEDP
   }
   arg1 = reinterpret_cast< Xrite::Device_Cpp::Topaz::DeviceInformation * >(argp1);
   result = (char *)(char *) ((arg1)->whiteTile);
-  {
-    size_t size = SWIG_strnlen(result, Xrite::Device_Cpp::Topaz::MaxStringLength);
-    
-    
-    
-    resultobj = SWIG_FromCharPtrAndSize(result, size);
-  }
+  
+  resultobj = PyUnicode_FromString(reinterpret_cast<char*>(result));
+  
   return resultobj;
 fail:
   return NULL;
@@ -4109,13 +4088,9 @@ SWIGINTERN PyObject *_wrap_DeviceInformation_calibrationDate_get(PyObject *SWIGU
   }
   arg1 = reinterpret_cast< Xrite::Device_Cpp::Topaz::DeviceInformation * >(argp1);
   result = (char *)(char *) ((arg1)->calibrationDate);
-  {
-    size_t size = SWIG_strnlen(result, Xrite::Device_Cpp::Topaz::MaxStringLength);
-    
-    
-    
-    resultobj = SWIG_FromCharPtrAndSize(result, size);
-  }
+  
+  resultobj = PyUnicode_FromString(reinterpret_cast<char*>(result));
+  
   return resultobj;
 fail:
   return NULL;
@@ -4168,13 +4143,9 @@ SWIGINTERN PyObject *_wrap_DeviceInformation_instrumentType_get(PyObject *SWIGUN
   }
   arg1 = reinterpret_cast< Xrite::Device_Cpp::Topaz::DeviceInformation * >(argp1);
   result = (char *)(char *) ((arg1)->instrumentType);
-  {
-    size_t size = SWIG_strnlen(result, Xrite::Device_Cpp::Topaz::MaxStringLength);
-    
-    
-    
-    resultobj = SWIG_FromCharPtrAndSize(result, size);
-  }
+  
+  resultobj = PyUnicode_FromString(reinterpret_cast<char*>(result));
+  
   return resultobj;
 fail:
   return NULL;
@@ -4240,7 +4211,12 @@ SWIGINTERN PyObject *_wrap_DeviceInformation_angles_get(PyObject *SWIGUNUSEDPARM
   }
   arg1 = reinterpret_cast< Xrite::Device_Cpp::Topaz::DeviceInformation * >(argp1);
   result = (char (*)[Xrite::Device_Cpp::Topaz::MaxStringLength])(char (*)[Xrite::Device_Cpp::Topaz::MaxStringLength]) ((arg1)->angles);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_a_Xrite__Device_Cpp__Topaz__MaxStringLength__char, 0 |  0 );
+  
+  resultobj = PyList_New(Xrite::Device_Cpp::Topaz::MaxNumberOfAngles);
+  for (Py_ssize_t i = 0; i < Xrite::Device_Cpp::Topaz::MaxNumberOfAngles; ++i) {
+    PyList_SET_ITEM(resultobj, i, PyUnicode_FromString(result[i]));
+  }
+  
   return resultobj;
 fail:
   return NULL;
@@ -4563,7 +4539,10 @@ SWIGINTERN PyObject *_wrap_AngleDescription_name_get(PyObject *SWIGUNUSEDPARM(se
   }
   arg1 = reinterpret_cast< Xrite::Device_Cpp::Topaz::AngleDescription * >(argp1);
   result = (uint8_t *)(uint8_t *) ((arg1)->name);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_unsigned_char, 0 |  0 );
+  
+  SWIG_Error(SWIG_ValueError, "test");
+  resultobj = PyUnicode_FromString(reinterpret_cast<char*>(result));
+  
   return resultobj;
 fail:
   return NULL;
@@ -5150,7 +5129,10 @@ SWIGINTERN PyObject *_wrap_Job_identifier_get(PyObject *SWIGUNUSEDPARM(self), Py
   }
   arg1 = reinterpret_cast< Xrite::Device_Cpp::Topaz::Job * >(argp1);
   result = (uint8_t *)(uint8_t *) ((arg1)->identifier);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_unsigned_char, 0 |  0 );
+  
+  SWIG_Error(SWIG_ValueError, "test");
+  resultobj = PyUnicode_FromString(reinterpret_cast<char*>(result));
+  
   return resultobj;
 fail:
   return NULL;
@@ -5209,7 +5191,10 @@ SWIGINTERN PyObject *_wrap_Job_name_get(PyObject *SWIGUNUSEDPARM(self), PyObject
   }
   arg1 = reinterpret_cast< Xrite::Device_Cpp::Topaz::Job * >(argp1);
   result = (uint8_t *)(uint8_t *) ((arg1)->name);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_unsigned_char, 0 |  0 );
+  
+  SWIG_Error(SWIG_ValueError, "test");
+  resultobj = PyUnicode_FromString(reinterpret_cast<char*>(result));
+  
   return resultobj;
 fail:
   return NULL;
@@ -5931,7 +5916,10 @@ SWIGINTERN PyObject *_wrap_NetworkDescription_SSID_get(PyObject *SWIGUNUSEDPARM(
   }
   arg1 = reinterpret_cast< Xrite::Device_Cpp::Topaz::NetworkDescription * >(argp1);
   result = (uint8_t *)(uint8_t *) ((arg1)->SSID);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_unsigned_char, 0 |  0 );
+  
+  SWIG_Error(SWIG_ValueError, "test");
+  resultobj = PyUnicode_FromString(reinterpret_cast<char*>(result));
+  
   return resultobj;
 fail:
   return NULL;
@@ -5990,7 +5978,10 @@ SWIGINTERN PyObject *_wrap_NetworkDescription_MACAddress_get(PyObject *SWIGUNUSE
   }
   arg1 = reinterpret_cast< Xrite::Device_Cpp::Topaz::NetworkDescription * >(argp1);
   result = (uint8_t *)(uint8_t *) ((arg1)->MACAddress);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_unsigned_char, 0 |  0 );
+  
+  SWIG_Error(SWIG_ValueError, "test");
+  resultobj = PyUnicode_FromString(reinterpret_cast<char*>(result));
+  
   return resultobj;
 fail:
   return NULL;
@@ -6049,7 +6040,10 @@ SWIGINTERN PyObject *_wrap_NetworkDescription_authentification_get(PyObject *SWI
   }
   arg1 = reinterpret_cast< Xrite::Device_Cpp::Topaz::NetworkDescription * >(argp1);
   result = (uint8_t *)(uint8_t *) ((arg1)->authentification);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_unsigned_char, 0 |  0 );
+  
+  SWIG_Error(SWIG_ValueError, "test");
+  resultobj = PyUnicode_FromString(reinterpret_cast<char*>(result));
+  
   return resultobj;
 fail:
   return NULL;
@@ -8699,7 +8693,6 @@ SWIGINTERN PyObject *_wrap_TopazInterface_deleteJob__SWIG_1(PyObject *SWIGUNUSED
   int res2 ;
   char *buf2 = 0 ;
   int alloc2 = 0 ;
-  PyObject *result = 0 ;
   
   if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Xrite__Device_Cpp__Topaz__TopazInterface, 0 |  0 );
@@ -8712,8 +8705,8 @@ SWIGINTERN PyObject *_wrap_TopazInterface_deleteJob__SWIG_1(PyObject *SWIGUNUSED
     SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "TopazInterface_deleteJob" "', argument " "2"" of type '" "char const *""'");
   }
   arg2 = reinterpret_cast< char * >(buf2);
-  result = (PyObject *)Xrite_Device_Cpp_Topaz_TopazInterface_deleteJob__SWIG_1(arg1,(char const *)arg2);
-  resultobj = result;
+  Xrite_Device_Cpp_Topaz_TopazInterface_deleteJob__SWIG_1(arg1,(char const *)arg2);
+  resultobj = SWIG_Py_Void();
   if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
   return resultobj;
 fail:
@@ -8783,7 +8776,6 @@ SWIGINTERN PyObject *_wrap_TopazInterface_addJob__SWIG_1(PyObject *SWIGUNUSEDPAR
   int alloc3 = 0 ;
   unsigned char val4 ;
   int ecode4 = 0 ;
-  PyObject *result = 0 ;
   
   if ((nobjs < 4) || (nobjs > 4)) SWIG_fail;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_Xrite__Device_Cpp__Topaz__TopazInterface, 0 |  0 );
@@ -8806,8 +8798,8 @@ SWIGINTERN PyObject *_wrap_TopazInterface_addJob__SWIG_1(PyObject *SWIGUNUSEDPAR
     SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "TopazInterface_addJob" "', argument " "4"" of type '" "uint8_t""'");
   } 
   arg4 = static_cast< uint8_t >(val4);
-  result = (PyObject *)Xrite_Device_Cpp_Topaz_TopazInterface_addJob__SWIG_1(arg1,(char const *)arg2,(char const *)arg3,arg4);
-  resultobj = result;
+  Xrite_Device_Cpp_Topaz_TopazInterface_addJob__SWIG_1(arg1,(char const *)arg2,(char const *)arg3,arg4);
+  resultobj = SWIG_Py_Void();
   if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
   if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
   return resultobj;

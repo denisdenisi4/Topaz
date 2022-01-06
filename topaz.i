@@ -1,5 +1,21 @@
 %module Topaz
 
+%typemap(out) uint8_t[ANY] %{
+SWIG_Error(SWIG_ValueError, "test");
+    $result = PyUnicode_FromString(reinterpret_cast<char*>($1));
+%}
+
+%typemap(out) char[ANY] %{
+    $result = PyUnicode_FromString(reinterpret_cast<char*>($1));
+%}
+
+%typemap(out) char [ANY][ANY] %{
+    $result = PyList_New($1_dim0);
+    for (Py_ssize_t i = 0; i < $1_dim0; ++i) {
+        PyList_SET_ITEM($result, i, PyUnicode_FromString($1[i]));
+    }
+%}
+
 %{
 #include <sstream>
 #include <cstdlib>
@@ -31,17 +47,15 @@ struct DeviceInformation {
 %extend Xrite::Device_Cpp::Topaz::DeviceInformation {
     PyObject *__str__() {
         std::ostringstream ss;
-		ss.str("");
-        ss.clear();
 
 		ss << "{";
 		ss << "serialNumber: '" << $self->serialNumber << "', ";
 		ss << "whiteTile: '" << $self->whiteTile << "', ";
 		ss << "calibrationDate: '" << $self->calibrationDate << "', ";
 		ss << "instrumentType: '" << $self->instrumentType << "', ";
-		ss << "numberOfAngles: '" << $self->numberOfAngles << "', ";
+		ss << "numberOfAngles: '" << (int) $self->numberOfAngles << "', ";
 		ss << "angles: [";
-		for (int i = 0; i < Xrite::Device_Cpp::Topaz::MaxNumberOfAngles; ++i) {
+		for (int i = 0; i < (int) $self->numberOfAngles; ++i) {
             ss << "'" << $self->angles[i] << "',";
 		}
 		ss << "]";
@@ -165,8 +179,7 @@ struct DeviceInformation {
     PyObject *__str__() {
         std::ostringstream ss;
 
-		ss << "{ time: '" << $self->timeStamp.year << "-" << $self->timeStamp.month << "-" << $self->timeStamp.day << " "
-		   << $self->timeStamp.hour << ":" << $self->timeStamp.minute << ":" << $self->timeStamp.second << "', ";
+		ss << "{ time: '" << Xrite_Device_Cpp_Topaz_Time___str__(& $self->timeStamp) << "', ";
 
 		ss << "temperature: " << $self->temperature << ", ";
 
@@ -390,9 +403,9 @@ struct DeviceInformation {
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
 
-		pyJob = SWIG_NewPointerObj(time, SWIGTYPE_p_Xrite__Device_Cpp__Topaz__Job, SWIG_POINTER_OWN);
+		pyJob = SWIG_NewPointerObj(job, SWIGTYPE_p_Xrite__Device_Cpp__Topaz__Job, SWIG_POINTER_OWN);
 		pyTime = SWIG_NewPointerObj(time, SWIGTYPE_p_Xrite__Device_Cpp__Topaz__Time, SWIG_POINTER_OWN);
-		pyResult = SWIG_NewPointerObj(time, SWIGTYPE_p_Xrite__Device_Cpp__Topaz__Sample, SWIG_POINTER_OWN);
+		pyResult = SWIG_NewPointerObj(result, SWIGTYPE_p_Xrite__Device_Cpp__Topaz__Sample, SWIG_POINTER_OWN);
 		if (maxNumberOfSamples > 0) {
 			pySamples = PyList_New(actualNumberOfSamples);
 			for (uint8_t i = 0; i < actualNumberOfSamples; ++i) {
@@ -407,28 +420,28 @@ struct DeviceInformation {
 	    return nullptr;
 	}
 
-    PyObject *deleteJob(const char* identification) {
+    void deleteJob(const char* identification) {
 		uint32_t libCode = $self->deleteJob((const uint8_t*) identification);
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 			static char temp[256];
 			sprintf(temp,"deleteJob() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
-		return nullptr;
+		return;
 		fail:
-	    return nullptr;
+	    return;
 	}
 
-    PyObject *addJob(const char* identification, const char* description, uint8_t numberOfMeasurements) {
+    void addJob(const char* identification, const char* description, uint8_t numberOfMeasurements) {
 		uint32_t libCode = $self->addJob((const uint8_t*) identification, (const uint8_t*) description, numberOfMeasurements);
 		if (libCode != Xrite::Device_Cpp::Topaz::Answer::OK) {
 			static char temp[256];
 			sprintf(temp,"addJob() error code 0x%04x: %s", libCode, Xrite_Device_Cpp_Topaz_Answer_toString(libCode));
 		    SWIG_exception(SWIG_RuntimeError, temp);
 		}
-		return nullptr;
+		return;
 		fail:
-	    return nullptr;
+	    return;
 	}
 
     PyObject *getJobList(uint16_t maxNumberOfJobs) {
