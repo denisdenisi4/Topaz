@@ -1,10 +1,8 @@
 import Topaz
 
 try:
-    interface = Topaz.getTopazInterface()
-
-    # For test without device
-    # interface = Topaz.getTopazSimulation()
+    TEST_ON_REAL_DEVICE = False
+    interface = Topaz.getTopazInterface() if TEST_ON_REAL_DEVICE else Topaz.getTopazSimulation()
 
     version, legacyVersion = interface.getVersion()
     print("Version: " + version)
@@ -37,7 +35,7 @@ try:
 
     # interface.setWifiConfiguration("my_ssid", "my_password")
     # ssid = interface.getWifiConfiguration()
-    # print(desc)
+    # print(ssid)
 
     # interface.setHostname("some_hostname")
     # hostname = interface.getHostname()
@@ -61,11 +59,16 @@ try:
     # interface.deleteJob("JobId3");
     # print("Job deleted") 
 
-    # maxNumberOfSamples = 10
+    # WITHOUT sample array
     # job, time, result = interface.getJobResult("JobId1", 0)
     # print("Job time: " + str(time))
     # print("Job name: " + job.name)
     # print("Result temperature: " + str(result.temperature))
+    # print("Some spectralValues: " + str(result.spectralValues[0][1]))
+    # print("Some LabCh value: " + str(result.LabCh[0][1]))
+
+    # WITH sample array
+    # maxNumberOfSamples = 10
     # job, time, result, samples = interface.getJobResult("JobId1", maxNumberOfSamples)
     # for s in samples:
     #     print("Sample timeStamp: " + str(s.timeStamp))
